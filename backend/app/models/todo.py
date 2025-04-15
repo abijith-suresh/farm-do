@@ -1,8 +1,10 @@
 from datetime import datetime
-from typing import Optional, List
-from pydantic import BaseModel, Field, ConfigDict
-from bson import ObjectId
 from enum import Enum
+from typing import Optional, List
+
+from bson import ObjectId
+from pydantic import BaseModel, Field, ConfigDict
+
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -14,8 +16,7 @@ class PyObjectId(ObjectId):
         from pydantic_core import core_schema
 
         return core_schema.no_info_after_validator_function(
-            cls.validate,
-            core_schema.str_schema()
+            cls.validate, core_schema.str_schema()
         )
 
     @classmethod
@@ -24,10 +25,12 @@ class PyObjectId(ObjectId):
             raise ValueError(f"Invalid ObjectId: {v}")
         return ObjectId(v)
 
+
 class Priority(str, Enum):
     low = "low"
     medium = "medium"
     high = "high"
+
 
 # Shared fields for Todo
 class TodoBase(BaseModel):
@@ -39,9 +42,11 @@ class TodoBase(BaseModel):
     tags: Optional[List[str]] = []
     list_id: Optional[PyObjectId] = None
 
+
 # Model used when creating a Todo
 class TodoCreate(TodoBase):
     pass
+
 
 # Model used when returning a Todo from DB
 class TodoDB(TodoBase):
@@ -50,5 +55,5 @@ class TodoDB(TodoBase):
     model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,
-        json_encoders={ObjectId: str}
+        json_encoders={ObjectId: str},
     )

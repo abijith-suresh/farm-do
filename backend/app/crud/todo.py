@@ -1,6 +1,8 @@
 from bson import ObjectId
+
 from app.core.database import todo_collection
 from app.models.todo import TodoCreate, TodoDB
+
 
 # Create a new Todo
 async def create_todo(todo: TodoCreate) -> TodoDB:
@@ -8,6 +10,7 @@ async def create_todo(todo: TodoCreate) -> TodoDB:
     result = await todo_collection.insert_one(todo_dict)
     todo_dict["_id"] = str(result.inserted_id)
     return TodoDB(**todo_dict)
+
 
 # Get all Todos
 async def get_all_todos() -> list[TodoDB]:
@@ -19,6 +22,7 @@ async def get_all_todos() -> list[TodoDB]:
         todos.append(TodoDB(**doc))
     return todos
 
+
 # Get a single Todo by ID
 async def get_todo_by_id(todo_id: ObjectId) -> TodoDB | None:
     todo = await todo_collection.find_one({"_id": todo_id})
@@ -29,13 +33,12 @@ async def get_todo_by_id(todo_id: ObjectId) -> TodoDB | None:
         return TodoDB(**todo)
     return None
 
+
 # Update a Todo
 async def update_todo(todo_id: ObjectId, data: dict) -> bool:
-    result = await todo_collection.update_one(
-        {"_id": todo_id},
-        {"$set": data}
-    )
+    result = await todo_collection.update_one({"_id": todo_id}, {"$set": data})
     return result.modified_count == 1
+
 
 # Delete a Todo
 async def delete_todo(todo_id: ObjectId) -> bool:
