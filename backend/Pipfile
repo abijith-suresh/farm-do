@@ -5,8 +5,8 @@ name = "pypi"
 
 [packages]
 uvicorn = "*"
-motor = "*"
 fastapi = {extras = ["standard"], version = "*"}
+motor = "*"
 
 [dev-packages]
 
