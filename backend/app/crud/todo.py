@@ -6,7 +6,7 @@ from app.models.todo import TodoCreate, TodoDB
 async def create_todo(todo: TodoCreate) -> TodoDB:
     todo_dict = todo.model_dump()
     result = await todo_collection.insert_one(todo_dict)
-    todo_dict["_id"] = result.inserted_id
+    todo_dict["_id"] = str(result.inserted_id)
     return TodoDB(**todo_dict)
 
 # Get all Todos
@@ -22,6 +22,7 @@ async def get_todo_by_id(todo_id: str) -> TodoDB | None:
         return None
     todo = await todo_collection.find_one({"_id": ObjectId(todo_id)})
     if todo:
+        todo["_id"] = str(todo["_id"])
         return TodoDB(**todo)
     return None
 

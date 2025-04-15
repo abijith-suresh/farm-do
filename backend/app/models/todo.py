@@ -24,8 +24,8 @@ class PyObjectId(ObjectId):
 
 # Shared fields for Todo
 class TodoBase(BaseModel):
-    title: str
-    description: Optional[str] = None
+    title: str = Field(..., min_length=3, max_length=100)
+    description: Optional[str] = Field(None, max_length=250)
     completed: bool = False
 
 # Model used when creating a Todo
@@ -34,10 +34,10 @@ class TodoCreate(TodoBase):
 
 # Model used when returning a Todo from DB
 class TodoDB(TodoBase):
-    id: str  = Field(alias="_id")
+    id: PyObjectId = Field(alias="_id")
 
-    model_config = {
-        "populate_by_name": True,
-        "arbitrary_types_allowed": True,
-        "json_encoders": {ObjectId: str}
-    }
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+        json_encoders={ObjectId: str}
+    )
