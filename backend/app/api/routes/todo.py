@@ -1,6 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+from bson import ObjectId
+from fastapi import APIRouter, HTTPException, status, Depends
 from app.models.todo import TodoCreate, TodoDB
 from app.crud import todo as crud
+from app.utils.validators import validate_object_id
 
 router = APIRouter(prefix="/todos", tags=["Todos"])
 
@@ -13,14 +15,14 @@ async def read_todos():
     return await crud.get_all_todos()
 
 @router.get("/{todo_id}", response_model=TodoDB)
-async def read_todo(todo_id: str):
+async def read_todo(todo_id: ObjectId = Depends(validate_object_id)):
     todo = await crud.get_todo_by_id(todo_id)
     if not todo:
         raise HTTPException(status_code=404, detail="Todo not found")
     return todo
 
 @router.put("/{todo_id}", response_model=TodoDB)
-async def update_todo(todo_id: str, data: TodoCreate):
+async def update_todo(todo_id: ObjectId = Depends(validate_object_id), data: TodoCreate):
     success = await crud.update_todo(todo_id, data.model_dump())
     if not success:
         raise HTTPException(status_code=404, detail="Todo not found")
@@ -28,7 +30,7 @@ async def update_todo(todo_id: str, data: TodoCreate):
     return updated
 
 @router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_todo(todo_id: str):
+async def delete_todo(todo_id: ObjectId = Depends(validate_object_id)):
     success = await crud.delete_todo(todo_id)
     if not success:
         raise HTTPException(status_code=404, detail="Todo not found")
