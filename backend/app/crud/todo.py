@@ -13,6 +13,9 @@ async def create_todo(todo: TodoCreate) -> TodoDB:
 async def get_all_todos() -> list[TodoDB]:
     todos = []
     async for doc in todo_collection.find():
+        doc["_id"] = str(doc["_id"])
+        if doc.get("list_id"):
+            doc["list_id"] = str(doc["list_id"])
         todos.append(TodoDB(**doc))
     return todos
 
@@ -21,6 +24,8 @@ async def get_todo_by_id(todo_id: ObjectId) -> TodoDB | None:
     todo = await todo_collection.find_one({"_id": todo_id})
     if todo:
         todo["_id"] = str(todo["_id"])
+        if todo.get("list_id"):
+            todo["list_id"] = str(todo["list_id"])
         return TodoDB(**todo)
     return None
 

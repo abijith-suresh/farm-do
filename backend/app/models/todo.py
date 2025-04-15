@@ -1,6 +1,8 @@
-from typing import Optional
+from datetime import datetime
+from typing import Optional, List
 from pydantic import BaseModel, Field, ConfigDict
 from bson import ObjectId
+from enum import Enum
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -22,11 +24,20 @@ class PyObjectId(ObjectId):
             raise ValueError(f"Invalid ObjectId: {v}")
         return ObjectId(v)
 
+class Priority(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+
 # Shared fields for Todo
 class TodoBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=100)
     description: Optional[str] = Field(None, max_length=250)
     completed: bool = False
+    priority: Priority = Priority.medium
+    due_date: Optional[datetime] = None
+    tags: Optional[List[str]] = []
+    list_id: Optional[PyObjectId] = None
 
 # Model used when creating a Todo
 class TodoCreate(TodoBase):

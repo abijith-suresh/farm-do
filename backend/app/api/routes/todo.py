@@ -22,7 +22,7 @@ async def read_todo(todo_id: ObjectId = Depends(validate_object_id)):
     return todo
 
 @router.put("/{todo_id}", response_model=TodoDB)
-async def update_todo(todo_id: ObjectId = Depends(validate_object_id), data: TodoCreate):
+async def update_todo(data: TodoCreate, todo_id: ObjectId = Depends(validate_object_id)):
     success = await crud.update_todo(todo_id, data.model_dump())
     if not success:
         raise HTTPException(status_code=404, detail="Todo not found")
