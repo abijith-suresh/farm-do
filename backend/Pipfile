@@ -5,8 +5,9 @@ name = "pypi"
 
 [packages]
 uvicorn = "*"
-fastapi = {extras = ["standard"], version = "*"}
 motor = "*"
+pydantic-settings = "*"
+fastapi = "*"
 
 [dev-packages]
 

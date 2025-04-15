@@ -34,10 +34,10 @@ class TodoCreate(TodoBase):
 
 # Model used when returning a Todo from DB
 class TodoDB(TodoBase):
-    id: PyObjectId = Field(alias="_id")
+    id: str  = Field(alias="_id")
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        arbitrary_types_allowed=True,
-        json_encoders={ObjectId: str}
-    )
+    model_config = {
+        "populate_by_name": True,
+        "arbitrary_types_allowed": True,
+        "json_encoders": {ObjectId: str}
+    }

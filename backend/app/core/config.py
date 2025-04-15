@@ -4,7 +4,8 @@ class Settings(BaseSettings):
     APP_NAME: str = "FARM Todo App"
     DEBUG: bool = True
 
-    class Config:
-        env_file = ".env"
+    model_config = {
+        "env_file": ".env"
+    }
 
 settings = Settings()
